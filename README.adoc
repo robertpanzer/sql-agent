@@ -57,6 +57,10 @@ Nov 15, 2015 7:22:52 PM foo.bar.impl.SQLMonitorImpl notifyExecution
 INFORMATION: SQL [create table A (a varchar(32))] took 1415393 ns
 ----
 
+== Limitations
+
+- Not working yet on JBoss.
+
 == TODO
 
 - Collect and log parameters to PreparedStatements
