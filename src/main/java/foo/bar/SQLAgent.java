@@ -30,6 +30,10 @@ public class SQLAgent {
 
 
     public static void premain(String agentArgs, Instrumentation instrumentation) throws Exception {
+
+        // Java sometimes seems to fail if this class is loaded later. (At least on Win)
+        Class.forName("java.lang.invoke.CallSite");
+
         // Resolve the methods of SQLAgentMethodProcessor and its methods
         // and cache them in the list.
         Class processorClass = SQLAgentMethodProcessor.class;
@@ -48,6 +52,10 @@ public class SQLAgent {
         instrumentation.addTransformer(new ClassFileTransformer() {
             @Override
             public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+
+                if (className.startsWith("sun")) {
+                    return classfileBuffer;
+                }
 
                 ClassPool cp = ClassPool.getDefault();
                 CtClass ctClass = null;
