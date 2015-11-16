@@ -10,28 +10,31 @@ import java.util.LinkedList;
  */
 public class SQLAgentThreadContext {
 
+    private class StackFrame {
 
-    private LinkedList<String> callStack = new LinkedList<>();
+        private final String methodName;
 
-    private long startTime;
+        private final long startTime = System.nanoTime();
 
-    private long endTime;
-
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
+        public StackFrame(String methodName) {
+            this.methodName = methodName;
+        }
     }
 
-    public long getStartTime() {
-        return startTime;
-    }
+    private LinkedList<StackFrame> callStack = new LinkedList<>();
 
-    public void startCall(String methodName) {
-        callStack.addLast(methodName);
+    private long lastDuration;
+
+    public void start(String methodName) {
+
+        callStack.push(new StackFrame(methodName));
     }
 
     public void endCall() {
-        callStack.removeLast();
+
+        StackFrame stackFrame = callStack.pop();
+        lastDuration = System.nanoTime() - stackFrame.startTime;
+
     }
 
     public int getCallStackSize() {
@@ -39,15 +42,7 @@ public class SQLAgentThreadContext {
     }
 
 
-    public void setEndTime(long endTime) {
-        this.endTime = endTime;
-    }
-
-    public long getEndTime() {
-        return endTime;
-    }
-
     public long getDuration() {
-        return endTime - startTime;
+        return lastDuration;
     }
 }

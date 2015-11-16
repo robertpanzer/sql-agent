@@ -94,8 +94,7 @@ public class SQLAgentMethodProcessor {
 
     public static void preInvoke(String methodName, Object[] args) {
         SQLAgentThreadContext tc = threadContext.get();
-        tc.setStartTime(System.nanoTime());
-        tc.startCall(methodName);
+        tc.start(methodName);
     }
 
     /**
@@ -104,7 +103,6 @@ public class SQLAgentMethodProcessor {
      */
     public static boolean postInvoke() {
         SQLAgentThreadContext tc = threadContext.get();
-        tc.setEndTime(System.nanoTime());
         tc.endCall();
         return tc.getCallStackSize() == 0;
     }
